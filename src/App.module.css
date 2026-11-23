@@ -1,0 +1,38 @@
+.shell { width: 100%; height: 100dvh; padding: 14px; background: #edf2fa; }
+.stage { display: flex; height: 100%; max-width: 1800px; margin: auto; overflow: hidden; background: var(--bg-surface); border: 1px solid #d4dde9; border-radius: 20px; box-shadow: 0 12px 50px #243b5c09; }
+.sidebarWrap { width: 224px; flex-shrink: 0; display: flex; flex-direction: column; }
+.brand { display: flex; align-items: center; gap: 11px; padding: 27px 24px 24px; background: #203c64; color: #ecf2fa; }
+.brandMark { width: 35px; height: 35px; display: grid; place-items: center; border: 1px solid #7d9fcb50; border-radius: 11px; color: #9fbce1; }
+.brand strong { display: block; font-size: 22px; font-weight: 600; letter-spacing: 3px; }
+.brand small { display: block; font-size: 8px; letter-spacing: 2px; color: #abbacd; margin-top: 4px; }
+.chatPanel { min-width: 0; flex: 1; display: flex; flex-direction: column; position: relative; }
+.topbar { min-height: 66px; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; border-bottom: 1px solid var(--bg-border); gap: 12px; }
+.breadcrumb { display: flex; align-items: center; gap: 10px; color: var(--text-secondary); font-size: 11px; white-space: nowrap; }
+.breadcrumb i { color: #acb9cb; font-style: normal; }
+.topActions { display: flex; align-items: center; gap: 8px; padding-right: 72px; }
+.modeBadge { display: flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 10px; background: #e9eef5; border-radius: 20px; padding: 6px 10px; white-space: nowrap; }
+.modeBadge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #5578a6; }
+.panelButton, .menuButton { width: 30px; height: 30px; display: grid; place-items: center; background: transparent; border: 1px solid var(--bg-border); border-radius: 8px; color: var(--text-secondary); cursor: pointer; }
+.panelButton:hover, .menuButton:hover { background: #e2e9f2; color: #315fa3; }
+.menuButton { display: none; }
+.header { padding: 24px 34px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.title { font-size: 19px; font-weight: 600; letter-spacing: .5px; }
+.subtitle { font-size: 11px; color: var(--text-secondary); margin-top: 7px; }
+.headerNumber { font: 10px Georgia, serif; letter-spacing: 1.5px; color: #738aa7; text-align: right; }
+.toolStrip { padding: 0 34px 12px; }
+.chatWindowShell { flex: 1; min-height: 0; display: flex; flex-direction: column; position: relative; }
+.historyOverlay { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg-surface); z-index: 2; }
+.historySpinner { width: 26px; height: 26px; border: 2px solid #d5deea; border-top-color: #315fa3; border-radius: 50%; animation: spin 1s linear infinite; }
+.codePanel { flex: 0 0 270px; min-width: 0; display: flex; flex-direction: column; background: #f1f5fc; border-left: 1px solid var(--bg-border); }
+.panelTabs { display: flex; align-items: center; gap: 14px; min-height: 66px; padding: 0 20px; border-bottom: 1px solid var(--bg-border); }
+.panelTabs button { border: 0; background: none; font-size: 11px; color: var(--text-muted); cursor: pointer; padding: 8px 0; white-space: nowrap; }
+.panelTabs .tabActive { color: #315fa3; font-weight: 600; border-bottom: 2px solid #315fa3; }
+.panelTabs .closePanel { margin-left: auto; display: flex; }
+.panelBody { flex: 1; min-height: 0; overflow: hidden; }
+.backdrop { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (min-width: 1280px) { .withGuide .topActions { padding-right: 0; } .codePanel { padding-top: 44px; } .panelTabs { min-height: 22px; padding-bottom: 10px; } }
+@media (max-width: 1279px) { .codePanel { position: absolute; z-index: 15; top: 80px; bottom: 26px; right: 26px; width: 290px; border: 1px solid var(--bg-border); border-radius: 16px; box-shadow: 0 15px 60px #1b293c25; overflow: hidden; } }
+@media (max-width: 900px) { .sidebarWrap { width: 192px; } .brand { padding-left: 20px; } .header { padding: 22px 24px 14px; } .toolStrip { padding-left: 24px; padding-right: 24px; } .topbar { padding-left: 24px; } .headerNumber { display: none; } }
+@media (max-width: 700px) { .shell { padding: 0; } .stage { border: 0; border-radius: 0; } .sidebarWrap { display: none; } .sidebarOpen { display: flex; position: absolute; top: 0; bottom: 0; left: 0; z-index: 30; width: 252px; box-shadow: 10px 0 40px #16233530; } .backdrop { display: block; position: absolute; inset: 0; z-index: 29; border: 0; background: #1c2d4340; } .menuButton { display: grid; } .topbar { padding: 0 16px; min-height: 64px; } .breadcrumb { gap: 8px; font-size: 10px; } .topActions { gap: 6px; padding-right: 65px; } .modeBadge { font-size: 9px; padding: 5px 7px; } .header { padding: 19px 20px 14px; } .title { font-size: 18px; } .subtitle { font-size: 10px; } .toolStrip { padding: 0 20px 8px; } .codePanel { top: 74px; bottom: 12px; right: 12px; width: min(310px, calc(100vw - 24px)); } }
+@media (max-width: 390px) { .modeBadge { display: none; } .topActions { padding-right: 63px; } }
