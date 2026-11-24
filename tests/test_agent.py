@@ -71,6 +71,28 @@ class StudyToolsTests(unittest.TestCase):
         self.assertIn(("tool_called", {"tool": "generate_quiz"}), events)
         self.assertEqual(events[-1], ("text_delta", {"delta": "以下是 CNN 测验。"}))
 
+    def test_model_field_rejects_credentials_before_network_request(self):
+        async def collect():
+            return [event async for event in server.live_events([], threading.Event())]
+        with patch.dict(os.environ, {"AI_GATEWAY_MODEL": "sk-test-only", "AI_GATEWAY_BASE_URL": "https://mock.invalid/v1"}), patch.object(server.httpx, "AsyncClient") as client:
+            with self.assertRaisesRegex(ValueError, "应填写模型名称"):
+                asyncio.run(collect())
+            client.assert_not_called()
+
+    def test_upstream_auth_error_explains_failure_without_echoing_body(self):
+        original = httpx.AsyncClient
+        def client(**kwargs):
+            transport = httpx.MockTransport(lambda request: httpx.Response(401, text="sensitive-upstream-body"))
+            return original(**kwargs, transport=transport)
+        async def collect():
+            return [event async for event in server.live_events([], threading.Event())]
+        with patch.dict(os.environ, {"AI_GATEWAY_MODEL": "test-model", "AI_GATEWAY_BASE_URL": "https://mock.invalid/v1", "AI_GATEWAY_API_KEY": "test-only"}), patch.object(server.httpx, "AsyncClient", client):
+            with self.assertRaises(ValueError) as raised:
+                asyncio.run(collect())
+        self.assertIn("HTTP 401", str(raised.exception))
+        self.assertIn("Key 无效或已过期", str(raised.exception))
+        self.assertNotIn("sensitive-upstream-body", str(raised.exception))
+
 
 class LocalApiTests(unittest.TestCase):
     @classmethod

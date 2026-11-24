@@ -212,3 +212,6 @@
 .markdown :global(table) { min-width: 520px; }
 .markdown :global(th:first-child), .markdown :global(td:first-child) { white-space: nowrap; }
 .markdown :global(th:last-child), .markdown :global(td:last-child) { min-width: 175px; }
+
+.bubble { font-size: 13px; line-height: 1.95; padding: 18px 21px 30px; }.botBubble { border-color: #e3eaf5; box-shadow: 0 3px 14px #30558604; border-radius: 4px 17px 17px 17px; }.userBubble { border-radius: 17px 4px 17px 17px; background: #eaf1fc; color: #3d608f; }.avatar { background: #edf3ff; color: #668ac0; }.userAvatar { background: #e4edfa; color: #6f90bd; }.time { color: #a5b5cd; font-size: 8px; }.markdown :global(strong) { color: #3d5b87; }.markdown :global(th) { background: #f0f5fe; }.markdown :global(td), .markdown :global(th) { border-color: #e2eaf5; padding: 10px 12px; }
+@media (max-width: 700px) { .bubble { font-size: 12px; padding: 14px 15px 27px; } }

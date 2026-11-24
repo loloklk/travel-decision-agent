@@ -171,7 +171,6 @@ export default function ConversationSidebar({
         )}
       </div>
 
-      <div className={styles.sidebarNote}><span>慢慢来，也很快。</span><p>让每一次练习，都有回响。</p><small>YOUR PERSONAL LEARNING SPACE</small></div>
       {hasMore && items.length > 0 && (
         <div className={styles.foot}>
           <button

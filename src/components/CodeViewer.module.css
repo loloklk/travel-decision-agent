@@ -1,13 +1,6 @@
-.panel { height: 100%; overflow: auto; padding: 28px 22px; }
-.eyebrow { color: #6d85a5; font-size: 8px; letter-spacing: 2px; margin-bottom: 9px; }
-.title { font-size: 17px; font-weight: 500; color: #2c3e56; }
-.intro { font-size: 11px; line-height: 1.9; color: #6981a1; margin: 12px 0 26px; }
-.step { display: flex; gap: 12px; padding-bottom: 27px; position: relative; }
-.step:not(:last-child)::after { content: ''; width: 1px; background: #cdd8e7; position: absolute; left: 13px; top: 34px; bottom: 7px; }
-.number { width: 27px; height: 27px; border-radius: 50%; background: #dae4f1; color: #4c6c96; font-size: 10px; display: grid; place-items: center; flex-shrink: 0; }
-.step:first-child .number { background: #2c4360; color: #d9e6f6; }
-.step h3 { font-weight: 600; font-size: 12px; color: #3a506d; margin: 4px 0 7px; }
-.step p { color: #6f86a4; font-size: 10px; line-height: 1.9; }
-.note { margin-top: 8px; border-radius: 12px; background: #dbe5f1; padding: 17px; }
-.note > span { display: inline-flex; color: #4b6b94; margin-bottom: 8px; }.note h4 { font-size: 11px; font-weight: 600; color: #354f72; margin-bottom: 8px; }.note p { color: #6781a3; line-height: 1.9; font-size: 10px; }
-.footer { font-size: 8px; color: #849bb8; letter-spacing: 1px; margin-top: 26px; }
+.panel { height: 100%; overflow: auto; padding: 24px 22px; background: #f8faff; }
+.guideIntro { padding: 21px 17px; border: 1px solid #e4ebf7; border-radius: 15px; background: linear-gradient(145deg,#edf4ff,#fafcff); margin-bottom: 25px; }.guideIcon { display: grid; place-items: center; width: 43px; height: 43px; background: #fff; box-shadow: 0 3px 9px #416eae08; border: 1px solid #dce7f8; border-radius: 12px; color: #6c93cc; margin-bottom: 18px; }
+.eyebrow { font-size: 7px; letter-spacing: 1.2px; color: #9aaed0; margin-bottom: 9px; }.title { font-size: 19px; font-weight: 600; letter-spacing: -.5px; color: #314c75; }.intro { font-size: 11px; line-height: 1.9; color: #869ab8; margin-top: 10px; }.listLabel { font-size: 11px; color: #5a759b; margin: 0 0 21px 2px; font-weight: 600; }
+.step { display: flex; gap: 12px; padding-bottom: 26px; position: relative; }.step:not(:last-child)::after { content: ''; width: 1px; background: #e1e9f5; position: absolute; left: 13px; top: 32px; bottom: 5px; }.number { width: 28px; height: 28px; border: 1px solid #dce7f8; border-radius: 9px; background: white; color: #8aa2c6; font-size: 9px; display: grid; place-items: center; flex-shrink: 0; }.step:first-child .number { background: #426fae; border-color: #426fae; color: white; }.step h3 { font-weight: 600; font-size: 11px; color: #4e678b; margin: 5px 0 7px; }.step p { color: #97a6bb; font-size: 10px; line-height: 1.9; }
+.note { margin-top: 2px; border-radius: 14px; border: 1px solid #e1eafa; background: #edf3fd; padding: 18px; }.note > span { display: flex; gap: 7px; align-items: center; color: #7e9ecb; margin-bottom: 14px; font-size: 9px; }.note h4 { font-size: 12px; font-weight: 600; color: #5575a4; margin-bottom: 9px; }.note p { color: #839cbe; line-height: 1.9; font-size: 10px; }.noteBottom { border-top: 1px solid #dae5f6; margin-top: 14px; padding-top: 12px; color: #8ca3c3; font-size: 8px; display: flex; align-items: center; gap: 5px; }.noteBottom span { width: 3px; height: 3px; background: #93b1df; border-radius: 50%; }
+.footer { display: flex; justify-content: center; gap: 23px; align-items: center; margin: 24px 0 2px; color: #a1aec2; font-size: 8px; }.footer > span { display: flex; flex-direction: column; gap: 5px; text-align: center; }.footer strong { font-size: 18px; font-weight: 500; color: #728eb6; }.footer i { width: 1px; height: 27px; background: #e0e8f5; }

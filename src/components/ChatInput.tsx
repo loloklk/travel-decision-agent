@@ -7,11 +7,12 @@ interface Props {
   onStop: () => void;
   onClear: () => void;
   disabled: boolean;
+  showPresets?: boolean;
 }
 
 const PRESETS = [['规划路线', '我是零基础，请给我一份深度学习路线。'], ['14天学习计划', '我有 Python 基础，请按入门水平制定14天深度学习计划，每天60分钟。'], ['出3道题', '出3道深度学习综合选择题，先不要告诉我答案。']] as const;
 
-export default function ChatInput({ onSend, onStop, onClear, disabled }: Props) {
+export default function ChatInput({ onSend, onStop, onClear, disabled, showPresets = true }: Props) {
   const [value, setValue] = useState('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { t } = useT();
@@ -27,6 +28,7 @@ export default function ChatInput({ onSend, onStop, onClear, disabled }: Props) 
   }, [value, disabled, onSend]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.nativeEvent.isComposing) return;
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -47,7 +49,7 @@ export default function ChatInput({ onSend, onStop, onClear, disabled }: Props) 
 
   return (
     <div className={styles.bar}>
-      <div className={styles.presets}>
+      {showPresets && <div className={styles.presets}>
         {PRESETS.map(([label, prompt]) => (
           <button
             key={label}
@@ -58,7 +60,7 @@ export default function ChatInput({ onSend, onStop, onClear, disabled }: Props) 
             <span aria-hidden="true">＋</span>{label}
           </button>
         ))}
-      </div>
+      </div>}
 
       <div className={`${styles.inputWrap} ${disabled ? styles.inputDisabled : ''}`}>
         <textarea
@@ -71,6 +73,7 @@ export default function ChatInput({ onSend, onStop, onClear, disabled }: Props) 
           onKeyDown={handleKeyDown}
           onInput={handleInput}
           rows={1}
+          maxLength={12000}
           disabled={disabled}
         />
         <button

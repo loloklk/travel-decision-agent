@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import type {
   Message,
-  ToolLampState,
   ConversationSummary,
 } from './types';
 import {
@@ -12,30 +11,15 @@ import {
   deleteConversation,
 } from './api';
 import type { RawSseEvent } from './api';
-import ToolIndicators from './components/ToolIndicators';
 import ChatWindow from './components/ChatWindow';
 import ChatInput from './components/ChatInput';
 import DebugPanel from './components/DebugPanel';
 import CodeViewer from './components/CodeViewer';
 import ConversationSidebar from './components/ConversationSidebar';
-import { I18nProvider, LangToggle, useT, MessageKeys } from './i18n';
+import { I18nProvider, useT } from './i18n';
 import { deleteSnapshot, loadSnapshot, saveSnapshot } from './lib/chatUiStore';
 import styles from './App.module.css';
 import Icon from './components/Icon';
-
-const LAMP_IDS = ['get_learning_path', 'create_study_plan', 'generate_quiz', 'grade_quiz'] as const;
-const LAMP_ICONS: Record<string, string> = {
-  get_learning_path: '🧭',
-  create_study_plan: '📅',
-  generate_quiz: '📝',
-  grade_quiz: '🎯',
-};
-const LAMP_I18N_KEYS: Record<string, string> = {
-  get_learning_path: 'tool.geocode',
-  create_study_plan: 'tool.malls',
-  generate_quiz: 'tool.brand',
-  grade_quiz: 'tool.distance',
-};
 
 const CONVERSATION_ID_STORAGE_KEY = 'study_conversation_id';
 
@@ -79,7 +63,6 @@ let _historyFetchInFlight = false;
 export default function App() {
   return (
     <I18nProvider>
-      <LangToggle />
       <AppInner />
     </I18nProvider>
   );
@@ -89,20 +72,9 @@ function AppInner() {
   const { t } = useT();
   const [runMode, setRunMode] = useState('');
   useEffect(() => {
-    fetch('/health').then(r => r.ok ? r.json() : null).then(data => { if (data?.mode) setRunMode(data.mode === 'live' ? '模型已连接 / LIVE' : '免 Key 演示 / DEMO'); }).catch(() => {});
+    fetch('/health').then(r => r.ok ? r.json() : null).then(data => { if (data?.mode) setRunMode(data.mode === 'live' ? '模型模式 / LIVE' : '免 Key 演示 / DEMO'); }).catch(() => {});
   }, []);
-  const buildLamps = useCallback((): ToolLampState[] =>
-    LAMP_IDS.map(id => ({
-      id,
-      label: t(LAMP_I18N_KEYS[id] as MessageKeys),
-      icon: LAMP_ICONS[id],
-      active: false,
-      animKey: 0,
-    })),
-  [t]);
-
   const [messages, setMessages] = useState<Message[]>([]);
-  const [lamps, setLamps]       = useState<ToolLampState[]>(buildLamps);
   const [loading, setLoading]   = useState(false);
   const [historyLoading, setHistoryLoading] = useState(true);
   const [debugEvents, setDebugEvents] = useState<RawSseEvent[]>([]);
@@ -129,16 +101,6 @@ function AppInner() {
   useEffect(() => {
     conversationIdRef.current = activeConversationId;
   }, [activeConversationId]);
-
-  // Update lamp labels when language changes
-  useEffect(() => {
-    setLamps(prev =>
-      prev.map(l => ({
-        ...l,
-        label: t(LAMP_I18N_KEYS[l.id] as MessageKeys),
-      }))
-    );
-  }, [t]);
 
   // Persist a UI snapshot of the current conversation's messages to IndexedDB
   // (debounced) so a refresh restores instantly without hitting /history.
@@ -356,20 +318,8 @@ function AppInner() {
         updateBotMessage(content => content + delta);
       },
 
-      onToolCalled(toolName) {
-        setLamps(prev =>
-          prev.map(l =>
-            l.id === toolName
-              ? { ...l, active: true, animKey: l.animKey + 1 }
-              : l
-          )
-        );
-        setTimeout(() => {
-          setLamps(prev =>
-            prev.map(l => (l.id === toolName ? { ...l, active: false } : l))
-          );
-        }, 1000);
-      },
+      // Tool calls remain available in the raw-event log.
+      onToolCalled() {},
 
       onRawEvent(event) {
         // Every backend SSE frame flows through here, so this is the cheapest
@@ -410,9 +360,13 @@ function AppInner() {
         void refreshConversations('replace');
       },
 
-      onError() {
+      onError(error) {
         clearBotStreaming();
-        updateBotMessage(content => content || t("status.error"));
+        const detail = error.message
+          .replace(/\bsk-[A-Za-z0-9_-]+/g, '[已隐藏密钥]')
+          .replace(/Bearer\s+\S+/gi, 'Bearer [已隐藏密钥]')
+          .slice(0, 600);
+        updateBotMessage(content => content + (content ? '\n\n' : '') + (detail ? `⚠️ ${detail}` : t("status.error")));
         finishStream();
       },
     }, conversationIdRef.current, {
@@ -555,13 +509,14 @@ function AppInner() {
   }, [loading, t]);
 
   const sidebarHasMore = useMemo(() => Boolean(nextCursor), [nextCursor]);
+  const todayLabel = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: 'long', day: 'numeric', weekday: 'long' }).format(new Date());
 
   return (
     <div className={styles.shell}>
-      <div className={`${styles.stage} ${showGuide ? styles.withGuide : ''}`}>
+      <div className={styles.stage}>
         {sidebarOpen && <button className={styles.backdrop} aria-label="关闭会话列表" onClick={() => setSidebarOpen(false)} />}
         <div className={`${styles.sidebarWrap} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
-          <div className={styles.brand}><span className={styles.brandMark}><Icon name="spark" size={23} /></span><div><strong>知序</strong><small>STUDY COACH</small></div></div>
+          <div className={styles.brand}><img className={styles.brandMark} src="/assets/zhixu-logo.svg" alt="知序 Logo" width={40} height={40} /><div><strong>知序</strong><small>STUDY COACH</small></div></div>
           <ConversationSidebar
             conversations={conversations}
             activeConversationId={activeConversationId}
@@ -579,23 +534,22 @@ function AppInner() {
           <div className={styles.topbar}>
             <div className={styles.breadcrumb}>
               <button className={styles.menuButton} aria-label="打开会话列表" onClick={() => setSidebarOpen(true)}><Icon name="menu" size={16} /></button>
-              <Icon name="book" size={15} /><span>学习空间</span><i>/</i><span>深度学习</span>
+              <Icon name="book" size={15} /><span>我的学习空间</span><i>/</i><span>工作台</span>
             </div>
-            <div className={styles.topActions}>
-              {runMode && <span className={styles.modeBadge}>{runMode.includes('LIVE') ? '模型已连接' : '演示模式'}</span>}
+            <div className={styles.topActions}><span className={styles.today}>{todayLabel}</span>
+              {runMode && <span className={styles.modeBadge}>{runMode.includes('LIVE') ? '模型模式' : '演示模式'}</span>}
               <button className={styles.panelButton} onClick={() => setShowGuide(v => !v)} aria-label="切换学习指南" aria-expanded={showGuide} title="学习指南与工具记录"><Icon name="panel" size={16} /></button>
             </div>
           </div>
-          <header className={styles.header}>
-            <div><h1 className={styles.title}>学习工作台</h1><p className={styles.subtitle}>给目标一点秩序，给成长一点时间。</p></div>
-            <p className={styles.headerNumber}>YOUR NEXT CHAPTER<br />STARTS HERE.</p>
-          </header>
-          <div className={styles.toolStrip}><ToolIndicators lamps={lamps} /></div>
+          {messages.length > 0 && <header className={styles.header}>
+            <div><h1 className={styles.title}>学习工作台</h1><p className={styles.subtitle}>为你的好奇心，找到下一步。</p></div>
+            <p className={styles.headerNumber}><span className={styles.headerDot} /> 专注当下，循序向前</p>
+          </header>}
           <div className={styles.chatWindowShell}>
             <ChatWindow messages={messages} loading={loading} onSend={handleSend} />
             {historyLoading && messages.length === 0 && <div className={styles.historyOverlay}><div className={styles.historySpinner} /></div>}
           </div>
-          <ChatInput onSend={handleSend} onStop={handleStop} onClear={handleClearHistory} disabled={loading} />
+          <ChatInput showPresets={messages.length > 0} onSend={handleSend} onStop={handleStop} onClear={handleClearHistory} disabled={loading} />
         </main>
         {showGuide && <div className={styles.codePanel}>
           <div className={styles.panelTabs}>

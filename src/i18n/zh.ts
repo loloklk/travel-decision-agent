@@ -9,8 +9,8 @@ const zh = {
   "empty.features": "学习路线 · 每日计划 · 随堂测验 · 错题复盘",
 
   // Chat input
-  "chat.placeholder": "今天想学什么？说说你的目标，或提交测验答案…",
-  "chat.hint": "Enter 发送 · Shift + Enter 换行  /  让练习成为理解的一部分",
+  "chat.placeholder": "说说你的学习目标，或者把问题交给我…",
+  "chat.hint": "Enter 发送 · Shift + Enter 换行  ·  好问题，是学习的开始。",
 
   // Preset questions
   "preset.1": "我有 Python 基础，请按入门水平制定14天深度学习计划，每天60分钟。",

@@ -19,9 +19,4 @@ button:disabled { cursor: not-allowed; }
 ::selection { background: #c3d4e9; }
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-thumb { background: #bfcbdb; border-radius: 10px; }
-.lang-toggle { position: fixed; top: 26px; right: 33px; z-index: 20; display: flex; align-items: center; gap: 7px; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--bg-border); background: var(--bg-surface); cursor: pointer; }
-.lang-toggle__label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; }
-.lang-toggle__label--active { color: var(--accent-gold); font-weight: 700; }
-.lang-toggle__sep { color: #b7c3d3; font-size: 10px; }
-@media (max-width: 640px) { .lang-toggle { top: 23px; right: 16px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }

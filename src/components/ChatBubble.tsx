@@ -4,7 +4,6 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useT } from '../i18n';
 import styles from './ChatBubble.module.css';
-import Icon from './Icon';
 
 interface Props {
   message: Message;
@@ -73,7 +72,7 @@ export default memo(function ChatBubble({ message }: Props) {
 
   return (
     <div className={`${styles.row} ${isUser ? styles.userRow : styles.botRow}`}>
-      {!isUser && <div className={styles.avatar}><Icon name="spark" size={16} /></div>}
+      {!isUser && <div className={styles.avatar}><img src="/assets/zhixu-logo.svg" alt="知序" width={28} height={28} /></div>}
       <div className={`${styles.bubble} ${isUser ? styles.userBubble : styles.botBubble}`}>
         {isUser ? (
           message.content

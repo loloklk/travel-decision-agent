@@ -101,7 +101,9 @@ async def live_events(messages, cancelled):
     model = os.getenv("AI_GATEWAY_MODEL", "").strip()
     if not base or not model:
         raise ValueError("请在 .env 填写 AI_GATEWAY_BASE_URL 和 AI_GATEWAY_MODEL，或设置 DEMO_MODE=true")
-    headers = {"Authorization": "Bearer " + os.environ["AI_GATEWAY_API_KEY"]}
+    if model.startswith(("sk-", "Bearer ", "ghp_")):
+        raise ValueError("AI_GATEWAY_MODEL 应填写模型名称，不是 API Key。EdgeOne 内置模型可填写 @makers/deepseek-v4-flash")
+    headers = {"Authorization": "Bearer " + os.environ["AI_GATEWAY_API_KEY"].strip()}
     prompt = core.SYSTEM_PROMPT + "\n当前上海日期：" + datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
     conversation = [{"role": "system", "content": prompt}, *messages]
     async with httpx.AsyncClient(timeout=httpx.Timeout(90, connect=15)) as client:
@@ -112,7 +114,14 @@ async def live_events(messages, cancelled):
             async with client.stream("POST", base + "/chat/completions", headers=headers,
                     json={"model": model, "messages": conversation, "tools": core.TOOLS, "stream": True}) as response:
                 if response.status_code != 200:
-                    raise ValueError(f"模型服务返回 HTTP {response.status_code}，请检查 Key、地址、模型名及额度")
+                    hints = {
+                        400: "请检查模型名称、参数，以及模型是否支持工具调用",
+                        401: "Key 无效或已过期，请确认 Key 来自当前接口地址对应的服务商",
+                        403: "当前 Key 没有此模型的访问权限，请检查模型开通状态",
+                        404: "接口地址或模型不存在；Base URL 应填写基础地址，不含 /chat/completions",
+                        429: "请求过于频繁或额度不足，请检查服务商控制台的用量与配额",
+                    }
+                    raise ValueError(f"模型服务返回 HTTP {response.status_code}：" + hints.get(response.status_code, "模型服务暂时不可用，请稍后再试"))
                 async for line in response.aiter_lines():
                     if cancelled.is_set():
                         return

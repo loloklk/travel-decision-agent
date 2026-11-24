@@ -32,3 +32,11 @@ Use case: stylized-concept. Asset type: editorial illustration for a deep learni
 ### 编辑提示词
 
 Edit target: the supplied study still-life illustration. Change only the color palette to a refined blue theme for a learning web app. Preserve the exact composition, objects, book, neural-network sphere arrangement, camera angle, textures, gentle light and shadows. Recolor the forest-green arch and book cover to deep navy blue, the sage spheres to soft sky blue, brass rods to brushed silver, and the terracotta pencil to medium cornflower blue. Recolor leaves to muted blue-gray. Change the warm cream backdrop and paper lighting to clean very pale ice-blue/white (#eef4fc). Keep the book pages almost white. Calm, sophisticated, coherent navy and blue palette; no green or warm orange accents. No text, no logo, no watermark.
+
+## 知序品牌标志
+
+- 彩色 SVG：`public/assets/zhixu-logo.svg`
+- 单色 SVG：`public/assets/zhixu-logo-mono.svg`
+- 品牌预览：`public/assets/zhixu-brand-preview.svg`
+- 形式：蓝色圆角图标，以 Z 字母折线和书页下划线表示知序与循序学习。
+- 实现：项目内原创 SVG 矢量路径，无需外部图片、字体服务或 Key；用于侧栏、助手头像与 favicon。
